@@ -27,7 +27,6 @@ jobs:
         run: docker run --rm -v "${{ github.workspace }}:/workspace" nationalinstruments/labview:latest-linux bash -c "LabVIEWCLI -OperationName MassCompile -DirectoryToCompile /workspace -LabVIEWPath /usr/local/natinst/LabVIEW-2026-64/labview -Headless"
 
       - name: Run CI integration LabVIEW VI Analyzer script in container
-        continue-on-error: true
         run: docker run --rm -v "${{ github.workspace }}:/workspace" -v "${{ github.workspace }}/report:/labview/report" nationalinstruments/labview:latest-linux bash -c "LabVIEWCLI -OperationName RunVIAnalyzer -ConfigPath /workspace/VIAnalyzerConfig/VIAnalyzerConfig.viancfg -ReportPath /labview/report/results.txt -LabVIEWPath /usr/local/natinst/LabVIEW-2026-64/labview -Headless"
 
       - name: Print VI Analyzer Results
