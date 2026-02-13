@@ -30,18 +30,21 @@ jobs:
         run: docker run --rm -v "${{ github.workspace }}:/workspace" -v "${{ github.workspace }}/report:/labview/report" nationalinstruments/labview:latest-linux bash -c "LabVIEWCLI -OperationName RunVIAnalyzer -ConfigPath /workspace/VIAnalyzerConfig/VIAnalyzerConfig.viancfg -ReportPath /labview/report/results.txt -LabVIEWPath /usr/local/natinst/LabVIEW-2026-64/labview -Headless"
 
       - name: Print VI Analyzer Results
+        if: always()
         run: |
           echo "================= VI ANALYZER REPORT ================="
           cat report/results.txt
           echo "======================================================"
 
       - name: Upload VI Analyzer Report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: vi-analyzer-report
           path: report/results.txt
 
       - name: Fail if VI Analyzer found failed tests
+        if: always()
         run: |
           if grep -q "tests failed" report/results.txt; then
             echo "❌ VI Analyzer reported failed tests."
