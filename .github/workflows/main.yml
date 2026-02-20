@@ -14,11 +14,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Create report directory
+        run: mkdir -p report
+
       - name: Pull LabVIEW container image
         run: docker pull nationalinstruments/labview:latest-linux
 
       - name: Run LabVIEWCLI MassCompile on Arrays
-        run: docker run --rm nationalinstruments/labview:latest-linux bash -c "LabVIEWCLI -OperationName MassCompile -DirectoryToCompile /usr/local/natinst/LabVIEW-2025-64/examples/Arrays -LabVIEWPath /usr/local/natinst/LabVIEW-2025-64/labview -Headless"
+        run: docker run --rm nationalinstruments/labview:latest-linux bash -c "LabVIEWCLI -OperationName MassCompile -DirectoryToCompile /usr/local/natinst/LabVIEW-2026-64/examples/Arrays -LabVIEWPath /usr/local/natinst/LabVIEW-2026-64/labview -Headless"
 
-      - name: Run CI integration script in container
-        run: docker run --rm -v "${{ github.workspace }}:/workspace" nationalinstruments/labview:latest-linux bash -c "LabVIEWCLI -OperationName MassCompile -DirectoryToCompile /workspace -LabVIEWPath /usr/local/natinst/LabVIEW-2025-64/labview -Headless"
+      - name: Run CI integration LabVIEW MassCompile script in container
+        run: docker run --rm -v "${{ github.workspace }}:/workspace" nationalinstruments/labview:latest-linux bash -c "LabVIEWCLI -OperationName MassCompile -DirectoryToCompile /workspace -LabVIEWPath /usr/local/natinst/LabVIEW-2026-64/labview -Headless"
+
+      - name: Run CI integration LabVIEW VI Analyzer script in container
+        run: docker run --rm -v "${{ github.workspace }}:/workspace" -v "${{ github.workspace }}/report:/labview/report" nationalinstruments/labview:latest-linux bash -c "LabVIEWCLI -OperationName RunVIAnalyzer -ConfigPath /workspace/VIAnalyzerConfig/VIAnalyzerConfig.viancfg -ReportPath /labview/report/results.txt -LabVIEWPath /usr/local/natinst/LabVIEW-2026-64/labview -Headless"
+
+      - name: Print VI Analyzer Results
+        if: always()
+        run: |
+          echo "================= VI ANALYZER REPORT ================="
+          cat report/results.txt
+          echo "======================================================"
+
+      - name: Upload VI Analyzer Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vi-analyzer-report
+          path: report/results.txt
