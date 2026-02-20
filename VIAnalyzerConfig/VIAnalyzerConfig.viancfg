@@ -6,11 +6,11 @@
 <TargetIndex>0</TargetIndex>
 <ItemsToAnalyze>
 	<Item>
-		<Path>"..\\LabVIEW Code\\add.vi"</Path>
+		<Path>"..\\LabVIEW_Code\\add.vi"</Path>
 		<Removed>FALSE</Removed>
 	</Item>
 	<Item>
-		<Path>"..\\LabVIEW Code\\sub.vi"</Path>
+		<Path>"..\\LabVIEW_Code\\sub.vi"</Path>
 		<Removed>FALSE</Removed>
 	</Item>
 </ItemsToAnalyze>
